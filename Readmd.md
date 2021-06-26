@@ -155,7 +155,7 @@ http://localhost:8080/query_gift_code
 ### 	请求参数
 
 ```json
-?code=1ORE35SJ
+code=1ORE35SJ
 ```
 
 ### 请求响应

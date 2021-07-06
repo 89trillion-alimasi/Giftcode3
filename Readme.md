@@ -280,6 +280,11 @@ make vet
 ./main
 ```
 
-
+程序详细处理
 
 ![gift](gift.png)
+
+程序逻辑思想
+
+![giftmodify](/Users/alimasi/go/src/GiftCode2/giftmodify.png)
+

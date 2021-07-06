@@ -10,13 +10,13 @@
 .
 ├── Readme.md
 ├── controller
-│   ├── StatusErr.go #返回状态信息和状态码定义
+│   ├── StatusErr.go #状态码
 │   ├── controller.go
 │   └── router.go
+├── gift.png #流程图
 ├── go.mod
 ├── go.sum
 ├── http
-│   ├── gift.png #流程图
 │   ├── main
 │   └── main.go
 ├── model
@@ -32,6 +32,7 @@
     │   └── locust_test.cpython-39.pyc
     ├── locust_gift.html
     └── locust_test.py
+
 
 ```
 
@@ -281,5 +282,4 @@ make vet
 
 
 
-![gift](/Users/alimasi/go/src/GiftCode2/http/gift.png)
-
+![gift](gift.png)

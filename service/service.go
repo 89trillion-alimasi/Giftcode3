@@ -11,13 +11,14 @@ import (
 
 // SaveGiftCode 将礼品码存储到 redis 中
 func SaveGiftCode(gift *model.GiftCode) error {
+	vp, _ := time.ParseInLocation("2006-01-02 15:04:05", gift.ValidPeriod, time.Local)
 	gift.CreatTime = time.Now().Format("2006-01-02 15:04:05")
 	bs, err := jsoniter.Marshal(gift)
 	if err != nil {
 		return err
 	}
 
-	return redis.RDB.Set(gift.Code, string(bs), gift.Expiration).Err()
+	return redis.RDB.Set(gift.Code, string(bs), time.Until(vp)).Err()
 }
 
 // QueryGiftCode 查询礼品码信息
@@ -50,14 +51,9 @@ func VerifyGiftCode(req model.VerifyRequest) (*model.GiftCode, error) {
 		if req.User != gifCode.ReceivingUser {
 			return nil, errors.New("当前礼品码已经指定用户，您输入的用户无权领取")
 		}
-		cmd := redis.RDB.Del(gifCode.Code)
-		if cmd.Err() != nil {
-			return nil, cmd.Err()
+		if _, err := One_time(gifCode); err != nil {
+			return nil, err
 		}
-		if cmd.Val() != 1 {
-			return nil, errors.New("礼品码领取失败: 礼品码删除失败")
-		}
-
 		// TODO: 当前没有真实用户体系，所以这里模拟添加奖励
 		logrus.Infof("用户 %s 添加奖励完成", req.User)
 		return gifCode, nil
@@ -66,15 +62,9 @@ func VerifyGiftCode(req model.VerifyRequest) (*model.GiftCode, error) {
 
 		// 如果礼品码正好还剩一次可以领取，领取后需要删除
 		if gifCode.AvailableTimes == 1 {
-			cmd := redis.RDB.Del(gifCode.Code)
-			if cmd.Err() != nil {
-				return nil, cmd.Err()
+			if _, err := One_time(gifCode); err != nil {
+				return nil, err
 			}
-			if cmd.Val() != 1 {
-				return nil, errors.New("礼品码领取失败: 礼品码删除失败")
-			}
-			// TODO: 当前没有真实用户体系，所以这里模拟添加奖励
-			logrus.Infof("用户 %s 添加奖励完成", req.User)
 			return gifCode, nil
 		} else {
 			// 如果礼品码剩余领取次数大于 1，领取后对可用次数 -1
@@ -92,11 +82,21 @@ func VerifyGiftCode(req model.VerifyRequest) (*model.GiftCode, error) {
 			return gifCode, redis.RDB.Set(gifCode.Code, string(bs), gifCode.Expiration).Err()
 		}
 	case 3: // 3 - 不限用户不限次数兑换 无用户限制 无兑换次数限制这里不做处理
-		return gifCode ,nil
+		return gifCode, nil
 	default: // 非法填写的礼品码类型
 		logrus.Infof("用户 %s 添加奖励完成", req.User)
 		return gifCode, nil
 	}
 }
 
-
+//只能取一次礼品
+func One_time(code *model.GiftCode) (*model.GiftCode, error) {
+	cmd := redis.RDB.Del(code.Code)
+	if cmd.Err() != nil {
+		return nil, cmd.Err()
+	}
+	if cmd.Val() != 1 {
+		return nil, errors.New("礼品码领取失败: 礼品码删除失败")
+	}
+	return code, nil
+}

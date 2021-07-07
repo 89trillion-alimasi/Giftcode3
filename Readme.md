@@ -112,7 +112,7 @@ GiftPackage存储信息
 {
   "type": 1,
   "receiving_user": "alms",
-  "valid_period": "2021-06-29 17:48:00",
+  "valid_period": 1625628980,
   "create_user": "admin",
   "available_times": 2,
   "description": "测试type1",
@@ -133,7 +133,8 @@ GiftPackage存储信息
 
 ```json
 {
-  "code": "1ORE35SJ"
+    "code": "0D45LM5R",
+    "message": "成功"
 }
 ```
 
@@ -147,7 +148,6 @@ GiftPackage存储信息
 | 402    | 请指定可兑换次数               |
 | 404    | 礼品码类型不合法               |
 | 406    | 请输入有效期                   |
-| 407    | 输入的礼品码有效期格式不正确   |
 | 403    | 输入的礼品码有效期小于当前时间 |
 | 411    | 请输入礼品码内容               |
 | 409    | 五次创建礼品码失败，请重新创建 |
@@ -166,33 +166,33 @@ http://localhost:8080/query_gift_code
 ### 	请求参数
 
 ```json
-code=1ORE35SJ
+code=0D45LM5R
 ```
 
 ### 请求响应
 
 ```json
 {
-  "description": "测试type1",
-  "type": 3,
-  "receiving_user": "alms",
-  "available_times": 2,
-  "valid_period": "2021-06-25 17:48:00",
-  "create_time": "2021-06-25 17:46:07",
-  "create_user": "admin",
-  "gift_packages": [
-    {
-      "name": "金币",
-      "num": 10
-    },
-    {
-      "name": "钻石",
-      "num": 20
-    }
-  ],
-  "received_users": null,
-  "received_count": 0,
-  "code": "1ORE35SJ"
+    "description": "测试type1",
+    "type": 1,
+    "receiving_user": "alms",
+    "available_times": 1,
+    "valid_period": 1625628980,
+    "create_time": 1625628370,
+    "create_user": "admin",
+    "gift_packages": [
+        {
+            "name": "金币",
+            "num": 10
+        },
+        {
+            "name": "钻石",
+            "num": 20
+        }
+    ],
+    "received_users": null,
+    "received_count": 0,
+    "code": "0D45LM5R"
 }
 ```
 
@@ -229,16 +229,16 @@ code=1ORE35SJ
 
 ```json
 {
-  "GiftPackages": [
-    {
-      "name": "金币",
-      "num": 10
-    },
-    {
-      "name": "钻石",
-      "num": 20
-    }
-  ]
+    "GiftPackages": [
+        {
+            "name": "金币",
+            "num": 10
+        },
+        {
+            "name": "钻石",
+            "num": 20
+        }
+    ]
 }
 ```
 

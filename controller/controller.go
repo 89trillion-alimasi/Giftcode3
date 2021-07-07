@@ -4,9 +4,9 @@ import (
 	"GiftCode2/model"
 	"GiftCode2/redis"
 	"GiftCode2/service"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
-	"net/http"
 	"time"
 )
 
@@ -48,21 +48,21 @@ func createGiftCode(c *gin.Context) {
 		c.JSON(GiftCodeDescription, gin.H{MESSAGE: StatusText(GiftCodeDescription)})
 		return
 	}
-
+	fmt.Printf("当前时间", time.Now().Unix())
 	// 检查礼品码有效期是否为空
-	if gift.ValidPeriod == "" {
+	if gift.ValidPeriod == 0 {
 		c.JSON(PleaseEnterAValidTime, gin.H{MESSAGE: StatusText(PleaseEnterAValidTime)})
 		return
 	}
 
 	// 检查礼品码有效期是否正确
-	vp, err := time.ParseInLocation("2006-01-02 15:04:05", gift.ValidPeriod, time.Local)
-	if err != nil {
-		c.JSON(IncorrectTimeFormat, gin.H{MESSAGE: StatusText(IncorrectTimeFormat)})
-		return
-	}
-	exp := vp.Sub(time.Now())
-	if exp <= 0 {
+	//vp, err := time.ParseInLocation("2006-01-02 15:04:05", gift.ValidPeriod, time.Local)
+	//if err != nil {
+	//	c.JSON(IncorrectTimeFormat, gin.H{MESSAGE: StatusText(IncorrectTimeFormat)})
+	//	return
+	//}
+	//exp := vp.Sub(time.Now())
+	if gift.ValidPeriod <= time.Now().Unix() {
 		c.JSON(InvalidTime, gin.H{MESSAGE: StatusText(InvalidTime)})
 		return
 	}
@@ -101,7 +101,7 @@ func createGiftCode(c *gin.Context) {
 	}
 
 	// 返回礼品码
-	c.JSON(CreatedSuccessfully, gin.H{"code": StatusText(CreatedSuccessfully)})
+	c.JSON(CreatedSuccessfully, gin.H{MESSAGE: StatusText(CreatedSuccessfully), "code": gift.Code})
 }
 
 //查询礼品码
@@ -149,5 +149,5 @@ func verifyGiftCode(c *gin.Context) {
 		c.JSON(FailedToClaim, gin.H{MESSAGE: StatusText(FailedToClaim)})
 		return
 	}
-	c.JSON(http.StatusInsufficientStorage, gin.H{"GiftPackages": gifCode.GiftPackages})
+	c.JSON(Successful, gin.H{"GiftPackages": gifCode.GiftPackages})
 }

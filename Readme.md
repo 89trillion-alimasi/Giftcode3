@@ -297,5 +297,5 @@ make vet
 
 程序逻辑思想
 
-![giftmodify](/Users/alimasi/go/src/GiftCode2/giftmodify.png)
+![giftmodify](giftmodify.png)
 

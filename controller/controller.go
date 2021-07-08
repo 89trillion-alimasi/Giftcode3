@@ -19,7 +19,7 @@ func createGiftCode(c *gin.Context) {
 	var gift model.GiftCode
 	// 绑定post参数
 	if err := c.Bind(&gift); err != nil {
-		c.JSON(ParameterBindingIsUnsuccessful, gin.H{MESSAGE: StatusText(ParameterBindingIsUnsuccessful)})
+		c.JSON(ParameterBindingIsUnsuccessful, StatusText(ParameterBindingIsUnsuccessful))
 		return
 	}
 
@@ -29,29 +29,29 @@ func createGiftCode(c *gin.Context) {
 		// 一次性消耗强制设置领取次数为 1
 		gift.AvailableTimes = 1
 		if gift.ReceivingUser == "" {
-			c.JSON(ReceivingUserIsEmpty, gin.H{MESSAGE: StatusText(ReceivingUserIsEmpty)})
+			c.JSON(ReceivingUserIsEmpty, StatusText(ReceivingUserIsEmpty))
 			return
 		}
 	case 2: // 2 - 不指定用户限制兑换次数
 		if gift.AvailableTimes <= 0 {
-			c.JSON(SpecifyTheNumberOfRedemptions, gin.H{MESSAGE: StatusText(SpecifyTheNumberOfRedemptions)})
+			c.JSON(SpecifyTheNumberOfRedemptions, StatusText(SpecifyTheNumberOfRedemptions))
 			return
 		}
 	case 3: // 3 - 不限用户不限次数兑换 无用户限制 无兑换次数限制这里不做处理
 	default: // 非法填写的礼品码类型
-		c.JSON(Invalidgiftcodetype, gin.H{MESSAGE: StatusText(Invalidgiftcodetype)})
+		c.JSON(Invalidgiftcodetype, StatusText(Invalidgiftcodetype))
 		return
 	}
 
 	// 检查礼品码描述
 	if gift.Description == "" {
-		c.JSON(GiftCodeDescription, gin.H{MESSAGE: StatusText(GiftCodeDescription)})
+		c.JSON(GiftCodeDescription, StatusText(GiftCodeDescription))
 		return
 	}
 	fmt.Printf("当前时间", time.Now().Unix())
 	// 检查礼品码有效期是否为空
 	if gift.ValidPeriod == 0 {
-		c.JSON(PleaseEnterAValidTime, gin.H{MESSAGE: StatusText(PleaseEnterAValidTime)})
+		c.JSON(PleaseEnterAValidTime, StatusText(PleaseEnterAValidTime))
 		return
 	}
 
@@ -63,13 +63,13 @@ func createGiftCode(c *gin.Context) {
 	//}
 	//exp := vp.Sub(time.Now())
 	if gift.ValidPeriod <= time.Now().Unix() {
-		c.JSON(InvalidTime, gin.H{MESSAGE: StatusText(InvalidTime)})
+		c.JSON(InvalidTime, StatusText(InvalidTime))
 		return
 	}
 
 	// 检查礼品码包含的礼品包是否为空
 	if gift.GiftPackages == nil || len(gift.GiftPackages) == 0 {
-		c.JSON(PackageContent, gin.H{MESSAGE: StatusText(PackageContent)})
+		c.JSON(PackageContent, StatusText(PackageContent))
 		return
 	}
 	var n = 5
@@ -85,7 +85,7 @@ func createGiftCode(c *gin.Context) {
 				n--
 				continue
 			} else {
-				c.String(CreateGiftCodeFaied, StatusText(CreateGiftCodeFaied))
+				c.JSON(CreateGiftCodeFaied, StatusText(CreateGiftCodeFaied))
 				return
 			}
 
@@ -96,12 +96,12 @@ func createGiftCode(c *gin.Context) {
 
 	// 将礼品码存储到 redis
 	if err := service.SaveGiftCode(&gift); err != nil {
-		c.JSON(InsertionFailed, gin.H{MESSAGE: StatusText(InsertionFailed)})
+		c.JSON(InsertionFailed, StatusText(InsertionFailed))
 		return
 	}
 
 	// 返回礼品码
-	c.JSON(CreatedSuccessfully, gin.H{MESSAGE: StatusText(CreatedSuccessfully), "code": gift.Code})
+	c.JSON(CreatedSuccessfully, StatusText1(CreatedSuccessfully, gift.Code))
 }
 
 //查询礼品码
@@ -109,45 +109,45 @@ func queryGiftCode(c *gin.Context) {
 	// 检测是否输入了礼品码
 	code := c.Query("code")
 	if code == "" {
-		c.JSON(GiftCodeErr, gin.H{MESSAGE: StatusText(GiftCodeErr)})
+		c.JSON(GiftCodeErr, StatusText(GiftCodeErr))
 		return
 	}
 
 	// 尝试从 redis 中查找该礼品码
 	giftCode := service.QueryGiftCode(code)
 	if giftCode == nil {
-		c.JSON(GiftCodeHasExpired, gin.H{MESSAGE: StatusText(GiftCodeHasExpired)})
+		c.JSON(GiftCodeHasExpired, StatusText(GiftCodeHasExpired))
 		return
 	}
 
 	// 返回礼品码
-	c.JSON(200, giftCode)
+	c.JSON(Successful, StatusText1(Successful, giftCode))
 }
 
 //验证礼品码
 func verifyGiftCode(c *gin.Context) {
 	var req model.VerifyRequest
 	if err := c.Bind(&req); err != nil {
-		c.JSON(ParameterBindingIsUnsuccessful, gin.H{MESSAGE: StatusText(PleaseEnterAValidTime)})
+		c.JSON(ParameterBindingIsUnsuccessful, StatusText(ParameterBindingIsUnsuccessful))
 		return
 	}
 
 	// 检查礼品码
 	if req.Code == "" {
-		c.JSON(GiftCodeErr, gin.H{MESSAGE: StatusText(GiftCodeErr)})
+		c.JSON(GiftCodeErr, StatusText(GiftCodeErr))
 		return
 	}
 
 	// 检查领取用户
 	if req.User == "" {
-		c.JSON(ReceivingUserIsEmpty, gin.H{MESSAGE: StatusText(ReceivingUserIsEmpty)})
+		c.JSON(ReceivingUserIsEmpty, StatusText(ReceivingUserIsEmpty))
 		return
 	}
 
 	gifCode, err := service.VerifyGiftCode(req)
 	if err != nil {
-		c.JSON(FailedToClaim, gin.H{MESSAGE: StatusText(FailedToClaim)})
+		c.JSON(FailedToClaim, StatusText(FailedToClaim))
 		return
 	}
-	c.JSON(Successful, gin.H{"GiftPackages": gifCode.GiftPackages})
+	c.JSON(Successful, StatusText1(Successful, gifCode))
 }

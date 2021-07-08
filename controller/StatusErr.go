@@ -27,7 +27,7 @@ var statusText = map[int]string{
 	PleaseEnterAValidTime:          "请输入有效期",
 	PackageContent:                 "请输入礼包内容",
 	CreateGiftCodeFaied:            "创建礼品码失败",
-	CreatedSuccessfully:            "成功",
+	CreatedSuccessfully:            "成功创建",
 	GiftCodeHasExpired:             "礼品码输入错误或礼品码已过期",
 	GiftCodeErr:                    "请输入礼品码",
 	FailedToClaim:                  "领取失败",
@@ -36,8 +36,25 @@ var statusText = map[int]string{
 	InsertionFailed:                "插入礼品码失败",
 }
 
+type Mesg struct {
+	Code    int
+	Message string
+	Data    interface{}
+}
+
 // StatusText returns a text for the HTTP status code. It returns the empty
 // string if the code is unknown.
-func StatusText(code int) string {
-	return statusText[code]
+func StatusText(code int) Mesg {
+	return Mesg{
+		Code:    code,
+		Message: statusText[code],
+	}
+}
+
+func StatusText1(code int, data interface{}) Mesg {
+	return Mesg{
+		Code:    code,
+		Message: statusText[code],
+		Data:    data,
+	}
 }

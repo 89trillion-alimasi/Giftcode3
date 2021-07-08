@@ -1,8 +1,8 @@
 package main
 
 import (
-	"GiftCode2/controller"
 	"GiftCode2/redis"
+	"GiftCode2/router"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"os"
@@ -23,7 +23,7 @@ var rootCmd = &cobra.Command{
 		redis.InitRedis(redisAddr)
 
 		logrus.Infof("启动 Web 服务器，监听地址: http://%s", listenAddr)
-		err := controller.InitRouter().Run(listenAddr)
+		err := router.InitRouter().Run(listenAddr)
 		if err != nil {
 			logrus.Fatalf("路由器运行失败: %v", err)
 		}

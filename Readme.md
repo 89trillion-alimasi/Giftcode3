@@ -133,8 +133,9 @@ GiftPackage存储信息
 
 ```json
 {
-    "code": "0D45LM5R",
-    "message": "成功"
+    "Code": 201,
+    "Message": "成功创建",
+    "Data": "V5KX5NKC"
 }
 ```
 
@@ -173,26 +174,30 @@ code=0D45LM5R
 
 ```json
 {
-    "description": "测试type1",
-    "type": 1,
-    "receiving_user": "alms",
-    "available_times": 1,
-    "valid_period": 1625628980,
-    "create_time": 1625628370,
-    "create_user": "admin",
-    "gift_packages": [
-        {
-            "name": "金币",
-            "num": 10
-        },
-        {
-            "name": "钻石",
-            "num": 20
-        }
-    ],
-    "received_users": null,
-    "received_count": 0,
-    "code": "0D45LM5R"
+    "Code": 200,
+    "Message": "成功",
+    "Data": {
+        "description": "测试type1",
+        "type": 1,
+        "receiving_user": "alms",
+        "available_times": 1,
+        "valid_period": 1725628980,
+        "create_time": 1625725957,
+        "create_user": "admin",
+        "gift_packages": [
+            {
+                "name": "金币",
+                "num": 10
+            },
+            {
+                "name": "钻石",
+                "num": 20
+            }
+        ],
+        "received_users": null,
+        "received_count": 0,
+        "code": "V5KX5NKC"
+    }
 }
 ```
 
@@ -228,7 +233,11 @@ code=0D45LM5R
 ### 请求响应
 
 ```json
-{
+{		
+  
+  	"Code": 200,
+    "Message": "成功",
+  "Data":{
     "GiftPackages": [
         {
             "name": "金币",
@@ -239,6 +248,7 @@ code=0D45LM5R
             "num": 20
         }
     ]
+  }
 }
 ```
 

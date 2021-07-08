@@ -11,9 +11,9 @@
 ├── Readme.md
 ├── controller
 │   ├── StatusErr.go #状态码
-│   ├── controller.go
-│   └── router.go
-├── gift.png #流程图
+│   └── controller.go
+├── gift.png
+├── giftmodify.png
 ├── go.mod
 ├── go.sum
 ├── http
@@ -23,7 +23,9 @@
 │   └── model.go
 ├── redis
 │   └── redis.go
-├── service
+├── router
+│   └── router.go  #路由 
+├── service  #业务逻辑层
 │   ├── rand.go
 │   ├── service.go
 │   └── service_test.go
@@ -32,7 +34,6 @@
     │   └── locust_test.cpython-39.pyc
     ├── locust_gift.html
     └── locust_test.py
-
 
 ```
 

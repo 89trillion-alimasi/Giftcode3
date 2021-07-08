@@ -15,7 +15,7 @@ const (
 )
 
 //创建礼品码
-func createGiftCode(c *gin.Context) {
+func CreateGiftCode(c *gin.Context) {
 	var gift model.GiftCode
 	// 绑定post参数
 	if err := c.Bind(&gift); err != nil {
@@ -105,7 +105,7 @@ func createGiftCode(c *gin.Context) {
 }
 
 //查询礼品码
-func queryGiftCode(c *gin.Context) {
+func QueryGiftCode(c *gin.Context) {
 	// 检测是否输入了礼品码
 	code := c.Query("code")
 	if code == "" {
@@ -125,7 +125,7 @@ func queryGiftCode(c *gin.Context) {
 }
 
 //验证礼品码
-func verifyGiftCode(c *gin.Context) {
+func VerifyGiftCode(c *gin.Context) {
 	var req model.VerifyRequest
 	if err := c.Bind(&req); err != nil {
 		c.JSON(ParameterBindingIsUnsuccessful, StatusText(ParameterBindingIsUnsuccessful))
@@ -149,5 +149,5 @@ func verifyGiftCode(c *gin.Context) {
 		c.JSON(FailedToClaim, StatusText(FailedToClaim))
 		return
 	}
-	c.JSON(Successful, StatusText1(Successful, gifCode))
+	c.JSON(Successful, StatusText1(Successful, gifCode.GiftPackages))
 }
